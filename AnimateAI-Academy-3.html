@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AnimateAI Academy – Master AI Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#03050a;--surface:#0a0f1a;--surface2:#0f1622;--surface3:#141e2e;
+  --cyan:#00f5d4;--pink:#ff2d78;--gold:#ffc642;--blue:#4d9fff;--green:#25D366;
+  --text:#dde6f0;--muted:#556070;--muted2:#7a8fa8;
+  --border:rgba(0,245,212,0.1);--border2:rgba(255,45,120,0.1);
+  --glow-c:0 0 60px rgba(0,245,212,0.15);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;}
+body::before{content:'';position:fixed;inset:0;z-index:1;opacity:.02;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* CURSOR */
+#cur{width:10px;height:10px;background:var(--cyan);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;}
+#crr{width:32px;height:32px;border:1px solid rgba(0,245,212,.35);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s ease-out,top .12s ease-out;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:14px 5%;background:rgba(3,5,10,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.15rem;letter-spacing:3px;color:var(--text);text-decoration:none;}
+.logo em{color:var(--cyan);font-style:normal;}.logo b{color:var(--pink);font-weight:900;}
+.nav-links{display:flex;gap:26px;list-style:none;}
+.nav-links a{color:var(--muted2);text-decoration:none;font-size:.73rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s;font-family:'JetBrains Mono',monospace;}
+.nav-links a:hover{color:var(--cyan);}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.btn-ml{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;letter-spacing:1px;color:var(--muted2);background:none;border:1px solid var(--border);padding:8px 15px;border-radius:6px;cursor:pointer;transition:all .2s;text-decoration:none;}
+.btn-ml:hover{color:var(--cyan);border-color:var(--cyan);}
+.btn-nwa{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--green);color:#000;border:none;padding:9px 16px;border-radius:6px;cursor:pointer;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.btn-nwa:hover{background:#20bc5a;box-shadow:0 0 22px rgba(37,211,102,.3);}
+
+/* HERO */
+#home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 5% 80px;position:relative;overflow:hidden;}
+#home::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,245,212,.012) 3px,rgba(0,245,212,.012) 4px);pointer-events:none;z-index:0;}
+.hbg{position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,245,212,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,212,.03) 1px,transparent 1px);background-size:70px 70px;animation:gf 7s ease-in-out infinite alternate;}
+@keyframes gf{from{opacity:.4}to{opacity:1}}
+.hg1{position:absolute;width:660px;height:660px;border-radius:50%;background:radial-gradient(circle,rgba(0,245,212,.06) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);animation:p1 5s ease-in-out infinite;pointer-events:none;z-index:0;}
+.hg2{position:absolute;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(255,45,120,.05) 0%,transparent 65%);top:5%;right:-8%;animation:p2 7s ease-in-out infinite;pointer-events:none;z-index:0;}
+.hg3{position:absolute;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(37,211,102,.04) 0%,transparent 65%);bottom:5%;left:-5%;animation:p1 9s ease-in-out infinite;pointer-events:none;z-index:0;}
+@keyframes p1{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
+@keyframes p2{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.h-in{position:relative;z-index:2;}
+.h-chip{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--border);background:rgba(0,245,212,.05);border-radius:100px;padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cyan);letter-spacing:1px;margin-bottom:26px;animation:fu .7s ease both;}
+.cdot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:bl 1.6s ease-in-out infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+h1.hh1{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(2.8rem,8vw,7rem);line-height:.92;letter-spacing:-1px;margin-bottom:20px;animation:fu .7s .08s ease both;}
+h1.hh1 .t1{display:block;color:var(--text);}
+h1.hh1 .t2{display:block;color:var(--cyan);text-shadow:0 0 60px rgba(0,245,212,.35);}
+h1.hh1 .t3{display:block;color:var(--pink);text-shadow:0 0 60px rgba(255,45,120,.3);}
+.h-sub{max-width:580px;margin:0 auto 34px;color:var(--muted2);font-size:1rem;line-height:1.75;animation:fu .7s .16s ease both;}
+.h-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fu .7s .24s ease both;}
+.btn-hwg{background:linear-gradient(135deg,#25D366,#1aaa52);color:#000;font-family:'Orbitron',monospace;font-weight:700;font-size:.78rem;letter-spacing:2px;padding:15px 32px;border-radius:8px;text-decoration:none;transition:all .25s;box-shadow:0 0 40px rgba(37,211,102,.2);display:inline-flex;align-items:center;gap:8px;}
+.btn-hwg:hover{transform:translateY(-3px);box-shadow:0 0 60px rgba(37,211,102,.4);}
+.btn-hg{border:1px solid var(--border);color:var(--muted2);font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:600;letter-spacing:1px;padding:15px 28px;border-radius:8px;text-decoration:none;transition:all .25s;}
+.btn-hg:hover{border-color:rgba(0,245,212,.4);color:var(--cyan);}
+.h-stats{display:flex;gap:44px;justify-content:center;margin-top:60px;animation:fu .7s .32s ease both;flex-wrap:wrap;}
+.hst{text-align:center;}
+.hst-n{font-family:'Orbitron',monospace;font-weight:900;font-size:2rem;color:var(--cyan);text-shadow:0 0 28px rgba(0,245,212,.3);display:block;}
+.hst-l{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+/* MARQUEE */
+.mq{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);padding:13px 0;}
+.mqt{display:flex;width:max-content;animation:mq 24s linear infinite;}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mqi{display:flex;align-items:center;gap:10px;padding:0 28px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:1px;white-space:nowrap;}
+.mqi::before{content:'✦';color:var(--cyan);font-size:.5rem;}
+
+/* SECTIONS */
+.sec{padding:96px 5%;position:relative;}
+.sdark{background:var(--surface);}
+.stag{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;display:block;}
+h2.sh2{font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(1.9rem,4vw,3.4rem);line-height:1;margin-bottom:14px;}
+h2.sh2 em{font-style:normal;color:var(--cyan);}
+.sp{color:var(--muted2);font-size:.93rem;line-height:1.75;max-width:560px;}
+
+/* PHASES */
+.phase-list{display:flex;flex-direction:column;gap:16px;margin-top:44px;}
+.phase{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .3s;}
+.phase:hover{border-color:rgba(0,245,212,.22);}
+.phase-hdr{display:flex;align-items:center;gap:14px;padding:18px 22px;cursor:pointer;user-select:none;}
+.pn{font-family:'Orbitron',monospace;font-weight:900;font-size:1.6rem;min-width:44px;line-height:1;}
+.c1{color:var(--cyan);}.c2{color:var(--gold);}.c3{color:var(--pink);}.c4{color:var(--blue);}.c5{color:#a78bfa;}
+.pi{flex:1;}
+.pt{font-family:'Orbitron',monospace;font-weight:700;font-size:.95rem;margin-bottom:3px;}
+.ps{color:var(--muted2);font-size:.77rem;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
+.plv{font-family:'JetBrains Mono',monospace;font-size:.6rem;padding:3px 10px;border-radius:100px;font-weight:700;letter-spacing:1px;flex-shrink:0;}
+.plv.b{background:rgba(0,245,212,.1);color:var(--cyan);border:1px solid rgba(0,245,212,.18);}
+.plv.i{background:rgba(255,198,66,.1);color:var(--gold);border:1px solid rgba(255,198,66,.18);}
+.plv.p{background:rgba(255,45,120,.1);color:var(--pink);border:1px solid rgba(255,45,120,.18);}
+.ptog{font-size:1.1rem;color:var(--cyan);font-family:'JetBrains Mono',monospace;transition:transform .35s;flex-shrink:0;}
+.ptog.open{transform:rotate(45deg);}
+.pbody{max-height:0;overflow:hidden;transition:max-height .45s ease,padding .3s;}
+.pbody.open{max-height:1000px;padding-bottom:22px;}
+.pinner{padding:0 22px;}
+.pg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px;}
+.pb{background:var(--surface3);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:13px 15px;}
+.pb-t{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.pb ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.pb li{font-size:.8rem;color:var(--muted2);display:flex;align-items:flex-start;gap:6px;}
+.pb li::before{content:'▸';color:var(--cyan);font-size:.62rem;margin-top:3px;flex-shrink:0;}
+.pproj{background:linear-gradient(135deg,rgba(0,245,212,.05),rgba(255,45,120,.05));border:1px solid rgba(0,245,212,.12);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:12px;}
+.ppj-ico{font-size:1.3rem;}
+.ppj-lbl{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+.ppj-txt{font-size:.86rem;font-weight:600;}
+
+/* COURSES */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(286px,1fr));gap:16px;margin-top:44px;}
+.cc{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .3s;position:relative;}
+.cc:hover{transform:translateY(-4px);border-color:rgba(0,245,212,.22);box-shadow:var(--glow-c);}
+.ccth{height:150px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden;}
+.ccth::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,var(--surface2));}
+.bga{background:linear-gradient(135deg,#021420,#0a2535);}.bgb{background:linear-gradient(135deg,#1a0622,#2e0e3a);}.bgc{background:linear-gradient(135deg,#1a1200,#2e2000);}.bgd{background:linear-gradient(135deg,#001a14,#002e22);}.bge{background:linear-gradient(135deg,#14001a,#250030);}.bgf{background:linear-gradient(135deg,#001220,#002040);}.bgg{background:linear-gradient(135deg,#1a0010,#2e0020);}.bgh{background:linear-gradient(135deg,#0a0020,#15003a);}.bgi{background:linear-gradient(135deg,#001510,#002518);}
+.cclv{position:absolute;top:10px;left:10px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:4px;}
+.lvb{background:rgba(0,245,212,.12);color:var(--cyan);border:1px solid rgba(0,245,212,.2);}
+.lvi{background:rgba(255,198,66,.12);color:var(--gold);border:1px solid rgba(255,198,66,.2);}
+.lvp{background:rgba(255,45,120,.12);color:var(--pink);border:1px solid rgba(255,45,120,.2);}
+.ccb{padding:17px;}
+.cctit{font-weight:700;font-size:.93rem;margin-bottom:6px;line-height:1.4;}
+.ccd{color:var(--muted2);font-size:.79rem;line-height:1.6;margin-bottom:12px;}
+.ccm{display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);}
+.cclk{position:absolute;inset:0;z-index:3;background:rgba(3,5,10,.82);backdrop-filter:blur(4px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;opacity:0;transition:opacity .3s;}
+.cc:hover .cclk{opacity:1;}
+.cclk-ic{font-size:2rem;}
+.cclk-tx{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--cyan);letter-spacing:2px;}
+.cclk-btn{margin-top:5px;background:var(--green);color:#000;font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:1px;padding:7px 16px;border-radius:6px;cursor:pointer;border:none;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.cclk-btn:hover{background:#20bc5a;}
+
+/* FILTER TABS */
+.ftab{font-family:'JetBrains Mono',monospace;font-size:.66rem;font-weight:700;letter-spacing:1px;padding:7px 16px;border-radius:100px;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted2);transition:all .2s;}
+.ftab.active,.ftab:hover{background:rgba(0,245,212,.08);border-color:var(--cyan);color:var(--cyan);}
+
+/* TECH STACK */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:44px;}
+.stk{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .3s;}
+.stk:hover{border-color:rgba(0,245,212,.22);transform:translateY(-3px);}
+.stk-ico{font-size:1.7rem;margin-bottom:10px;}
+.stk-n{font-family:'Orbitron',monospace;font-weight:700;font-size:.85rem;margin-bottom:5px;}
+.stk-d{color:var(--muted2);font-size:.78rem;line-height:1.55;margin-bottom:9px;}
+.stk-t{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--cyan);border:1px solid rgba(0,245,212,.2);padding:3px 8px;border-radius:4px;letter-spacing:1px;background:rgba(0,245,212,.06);}
+
+/* AI Q&A */
+.qa-wrap{max-width:780px;margin:44px auto 0;background:var(--surface2);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.qa-hdr{background:var(--surface3);border-bottom:1px solid var(--border);padding:11px 16px;display:flex;align-items:center;gap:8px;}
+.qdot{width:9px;height:9px;border-radius:50%;}
+.qdot.r{background:#ff5f57;}.qdot.y{background:#ffbd2e;}.qdot.g{background:#28ca41;}
+.qtb{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted);margin-left:6px;letter-spacing:1px;}
+.qmsgs{padding:20px;min-height:280px;max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;}
+.qmsgs::-webkit-scrollbar{width:3px;}.qmsgs::-webkit-scrollbar-thumb{background:rgba(0,245,212,.2);border-radius:2px;}
+.msg{display:flex;gap:10px;align-items:flex-start;}
+.msg.user{flex-direction:row-reverse;}
+.mav{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-weight:700;}
+.msg.ai .mav{background:rgba(0,245,212,.1);border:1px solid rgba(0,245,212,.2);color:var(--cyan);}
+.msg.user .mav{background:rgba(255,45,120,.1);border:1px solid rgba(255,45,120,.2);color:var(--pink);}
+.mbbl{max-width:82%;padding:10px 14px;border-radius:10px;font-size:.83rem;line-height:1.65;}
+.msg.ai .mbbl{background:var(--surface3);border:1px solid var(--border);color:var(--text);border-top-left-radius:2px;}
+.msg.user .mbbl{background:rgba(255,45,120,.07);border:1px solid var(--border2);color:var(--text);border-top-right-radius:2px;}
+.mbbl strong{color:var(--cyan);}
+.mbbl.typing{color:var(--muted);font-style:italic;}
+.qsugs{padding:0 20px 14px;display:flex;gap:7px;flex-wrap:wrap;}
+.qsug{font-family:'JetBrains Mono',monospace;font-size:.62rem;background:var(--surface3);border:1px solid rgba(255,255,255,.07);color:var(--muted2);padding:5px 11px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.qsug:hover{border-color:var(--cyan);color:var(--cyan);}
+.qinpw{border-top:1px solid var(--border);padding:13px 16px;display:flex;gap:10px;align-items:center;}
+.qinp{flex:1;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:.83rem;outline:none;transition:border-color .2s;}
+.qinp:focus{border-color:rgba(0,245,212,.3);}
+.qinp::placeholder{color:var(--muted);}
+.qsnd{background:var(--cyan);border:none;border-radius:8px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .2s;flex-shrink:0;}
+.qsnd:hover{background:var(--pink);}
+.qnote{text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.5px;}
+
+/* FAQ */
+.fl{max-width:760px;margin-top:44px;}
+.fi{border-bottom:1px solid var(--border);}
+.fq{width:100%;background:none;border:none;color:var(--text);font-family:'Syne',sans-serif;font-size:.9rem;font-weight:600;padding:19px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:16px;text-align:left;transition:color .2s;}
+.fq:hover{color:var(--cyan);}
+.fqp{font-size:1.1rem;color:var(--cyan);transition:transform .35s;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.fqp.open{transform:rotate(45deg);}
+.fa{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;color:var(--muted2);font-size:.84rem;line-height:1.75;}
+.fa.open{max-height:400px;padding-bottom:20px;}
+
+/* WHATSAPP ENROLL */
+.wa-card{background:linear-gradient(135deg,rgba(37,211,102,.07),rgba(0,245,212,.04));border:1px solid rgba(37,211,102,.2);border-radius:20px;padding:48px;text-align:center;margin-top:44px;position:relative;overflow:hidden;}
+.wa-big-ico{font-size:4rem;margin-bottom:18px;display:block;animation:flt 3s ease-in-out infinite;}
+@keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.wa-card h3{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;margin-bottom:10px;}
+.wa-card h3 em{font-style:normal;color:var(--green);}
+.wa-card > p{color:var(--muted2);font-size:.92rem;line-height:1.7;max-width:500px;margin:0 auto 30px;}
+.wa-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:14px;margin-bottom:32px;text-align:left;}
+.wa-step{background:rgba(3,5,10,.4);border:1px solid rgba(37,211,102,.12);border-radius:12px;padding:15px;}
+.wasn{font-family:'Orbitron',monospace;font-weight:900;font-size:1.4rem;color:var(--green);margin-bottom:5px;}
+.wast{font-weight:700;font-size:.85rem;margin-bottom:3px;}
+.wasd{color:var(--muted2);font-size:.76rem;line-height:1.5;}
+.btn-wab{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#000;font-family:'Orbitron',monospace;font-weight:900;font-size:.85rem;letter-spacing:2px;padding:17px 40px;border-radius:10px;text-decoration:none;transition:all .3s;box-shadow:0 0 50px rgba(37,211,102,.25);}
+.btn-wab:hover{background:#20bc5a;transform:translateY(-3px);box-shadow:0 0 80px rgba(37,211,102,.4);}
+.wa-note-sm{margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.5px;}
+
+/* PRICING */
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:16px;max-width:920px;margin:52px auto 0;}
+.pc{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:32px 24px;position:relative;transition:transform .3s,box-shadow .3s;text-align:left;}
+.pc:hover{transform:translateY(-4px);}
+.pc.hot{border-color:rgba(0,245,212,.35);box-shadow:var(--glow-c);}
+.pc.hot::before{content:'BEST VALUE';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--cyan);color:#000;font-family:'JetBrains Mono',monospace;font-size:.58rem;font-weight:700;letter-spacing:2px;padding:3px 12px;border-radius:100px;}
+.pct{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.pcp{font-family:'Orbitron',monospace;font-weight:900;font-size:2.6rem;color:var(--text);margin-bottom:3px;}
+.pcp sup{font-size:1rem;vertical-align:super;}
+.pcper{font-size:.76rem;color:var(--muted);margin-bottom:22px;}
+.pcl{list-style:none;margin-bottom:24px;display:flex;flex-direction:column;gap:9px;}
+.pcl li{display:flex;align-items:flex-start;gap:8px;font-size:.82rem;color:var(--muted2);}
+.pcl li::before{content:'▸';color:var(--cyan);font-size:.62rem;margin-top:3px;flex-shrink:0;}
+.pcl li.no{opacity:.3;text-decoration:line-through;}
+.pcl li.no::before{color:var(--muted);}
+.btn-pcw{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.73rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;cursor:pointer;border:none;transition:all .25s;background:var(--green);color:#000;}
+.btn-pcw:hover{background:#20bc5a;box-shadow:0 0 22px rgba(37,211,102,.3);}
+.btn-pco{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.73rem;letter-spacing:1.5px;cursor:pointer;border:1px solid var(--border);background:none;color:var(--muted2);transition:all .25s;text-decoration:none;}
+.btn-pco:hover{border-color:var(--green);color:var(--green);}
+
+/* CTA */
+.cta{text-align:center;padding:110px 5%;background:linear-gradient(135deg,rgba(0,245,212,.03),rgba(37,211,102,.03));border-top:1px solid var(--border);position:relative;overflow:hidden;}
+.cta::before{content:'ANIMATE';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'Orbitron',monospace;font-weight:900;font-size:clamp(5rem,14vw,13rem);color:rgba(0,245,212,.022);letter-spacing:12px;white-space:nowrap;pointer-events:none;}
+.cta .sh2,.cta p,.cta .ctabtns{position:relative;}
+.cta p{color:var(--muted2);max-width:480px;margin:12px auto 32px;font-size:.93rem;line-height:1.7;}
+.ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+/* MODAL */
+.movo{position:fixed;inset:0;z-index:1000;background:rgba(3,5,10,.92);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:20px;}
+.movo.show{display:flex;}
+.modal{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:36px;width:100%;max-width:410px;position:relative;animation:mi .35s ease;}
+@keyframes mi{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+.modal-x{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;transition:color .2s;}
+.modal-x:hover{color:var(--pink);}
+.mlgt{font-family:'Orbitron',monospace;font-weight:900;font-size:.82rem;letter-spacing:2px;color:var(--cyan);margin-bottom:7px;}
+.modal h3{font-family:'Orbitron',monospace;font-size:1.25rem;margin-bottom:5px;}
+.modal > p{color:var(--muted2);font-size:.82rem;margin-bottom:22px;}
+.ff{margin-bottom:13px;}
+.ff label{display:block;font-family:'JetBrains Mono',monospace;font-size:.63rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;}
+.ff input{width:100%;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:.87rem;outline:none;transition:border-color .2s;}
+.ff input:focus{border-color:rgba(0,245,212,.35);}
+.btn-si{width:100%;margin-top:5px;padding:12px;background:var(--cyan);color:#000;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.76rem;letter-spacing:2px;border:none;border-radius:8px;cursor:pointer;transition:all .25s;}
+.btn-si:hover{background:var(--pink);color:#fff;}
+.mnote{text-align:center;margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:.64rem;color:var(--muted);}
+.mnote a{color:var(--green);text-decoration:none;}
+
+/* DASHBOARD */
+#dash{display:none;position:fixed;inset:0;z-index:900;background:var(--bg);overflow-y:auto;}
+#dash.show{display:block;}
+.dnav{position:sticky;top:0;background:rgba(3,5,10,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:12px 5%;}
+.dlogo{font-family:'Orbitron',monospace;font-weight:900;font-size:.9rem;color:var(--cyan);letter-spacing:2px;}
+.duser{display:flex;align-items:center;gap:9px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted2);}
+.dav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--pink));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#000;}
+.btn-lo{background:none;border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.64rem;padding:5px 12px;border-radius:6px;cursor:pointer;transition:all .2s;}
+.btn-lo:hover{border-color:var(--pink);color:var(--pink);}
+.dbody{padding:40px 5%;}
+.dwel{font-family:'Orbitron',monospace;font-weight:700;font-size:1.4rem;margin-bottom:5px;}
+.dwel em{font-style:normal;color:var(--cyan);}
+.dsub{color:var(--muted2);font-size:.86rem;margin-bottom:32px;}
+.dst{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;letter-spacing:1px;margin-bottom:16px;color:var(--text);}
+.dst span{color:var(--cyan);}
+.dcg{display:grid;grid-template-columns:repeat(auto-fill,minmax(265px,1fr));gap:13px;margin-bottom:40px;}
+.dcc{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:17px;transition:all .25s;cursor:pointer;}
+.dcc:hover{border-color:rgba(0,245,212,.22);transform:translateY(-3px);}
+.dce{font-size:1.7rem;margin-bottom:9px;}
+.dct{font-weight:700;font-size:.88rem;margin-bottom:4px;}
+.dcpb{height:3px;background:var(--surface3);border-radius:2px;margin-top:11px;overflow:hidden;}
+.dcpf{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:2px;}
+.dcm{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:6px;}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:48px 5% 26px;}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:32px;}
+.fb .logo{display:block;margin-bottom:10px;font-size:.95rem;}
+.fb p{color:var(--muted);font-size:.78rem;line-height:1.7;max-width:230px;}
+.fc h5{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.fc ul a{color:var(--muted);font-size:.78rem;text-decoration:none;transition:color .2s;}
+.fc ul a:hover{color:var(--text);}
+.fbot{border-top:1px solid var(--border);padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.fbot p{font-size:.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+
+@media(max-width:900px){.nav-links{display:none;}.fg{grid-template-columns:1fr 1fr;}.h-stats{gap:22px;}}
+@media(max-width:600px){.fg{grid-template-columns:1fr;}.hst-n{font-size:1.7rem;}.wa-card{padding:26px 18px;}}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="crr"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="logo">Animate<em>AI</em><b>.</b></a>
+  <ul class="nav-links">
+    <li><a href="#curriculum">Curriculum</a></li>
+    <li><a href="#courses">Courses</a></li>
+    <li><a href="#qa">AI Tutor</a></li>
+    <li><a href="#enroll">Enroll</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#" class="btn-ml" onclick="openLogin(event)">Member Login</a>
+    <a href="#enroll" class="btn-nwa">📲 Enroll via WhatsApp</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <div class="hbg"></div>
+  <div class="hg1"></div><div class="hg2"></div><div class="hg3"></div>
+  <div class="h-in">
+    <div class="h-chip"><span class="cdot"></span>THE WORLD'S #1 AI ANIMATION ACADEMY</div>
+    <h1 class="hh1">
+      <span class="t1">MASTER</span>
+      <span class="t2">AI ANIMATION</span>
+      <span class="t3">ZERO → PRO</span>
+    </h1>
+    <p class="h-sub">5 phases. 10 weeks. From your first generated frame to a complete AI short film — using only free tools. No experience required.</p>
+    <div class="h-btns">
+      <a href="#enroll" class="btn-hwg">📲 ENROLL VIA WHATSAPP</a>
+      <a href="#curriculum" class="btn-hg">VIEW FULL CURRICULUM →</a>
+    </div>
+    <div class="h-stats">
+      <div class="hst"><span class="hst-n">5</span><span class="hst-l">Phases</span></div>
+      <div class="hst"><span class="hst-n">10</span><span class="hst-l">Weeks</span></div>
+      <div class="hst"><span class="hst-n">50+</span><span class="hst-l">Courses</span></div>
+      <div class="hst"><span class="hst-n">1M+</span><span class="hst-l">Q&amp;A Topics</span></div>
+      <div class="hst"><span class="hst-n">FREE</span><span class="hst-l">Tools Only</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq"><div class="mqt" id="mtrack"></div></div>
+
+<!-- CURRICULUM -->
+<section id="curriculum" class="sec sdark">
+  <span class="stag">// full curriculum</span>
+  <h2 class="sh2">AI ANIMATION <em>MASTERY</em><br>BEGINNER → PRO</h2>
+  <p class="sp">A structured 10-week, 5-phase program. Every phase ends with a real project you can add to your portfolio. Click any phase to expand.</p>
+  <div class="phase-list" id="phaseList"></div>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="sec">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:18px;margin-bottom:0;">
+    <div><span class="stag">// course library</span><h2 class="sh2">ALL <em>COURSES</em></h2></div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;">
+      <button class="ftab active" onclick="filterC('all',this)">ALL</button>
+      <button class="ftab" onclick="filterC('beginner',this)">BEGINNER</button>
+      <button class="ftab" onclick="filterC('intermediate',this)">INTERMEDIATE</button>
+      <button class="ftab" onclick="filterC('pro',this)">PRO</button>
+    </div>
+  </div>
+  <div class="cg" id="coursesGrid"></div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack" class="sec sdark">
+  <span class="stag">// zero-cost toolkit</span>
+  <h2 class="sh2">EVERY TOOL IS <em>FREE</em></h2>
+  <p class="sp">We teach only free tools. Everything you need to go from beginner to professional AI animator costs $0.</p>
+  <div class="sg" id="stackGrid"></div>
+</section>
+
+<!-- AI TUTOR -->
+<section id="qa" class="sec">
+  <span class="stag">// ai tutor</span>
+  <h2 class="sh2">ASK ANYTHING ABOUT<br><em>AI ANIMATION</em></h2>
+  <p class="sp">Over 1 million topics covered — beginner to pro. Try 5 free questions below. Members get unlimited access.</p>
+  <div class="qa-wrap">
+    <div class="qa-hdr">
+      <div class="qdot r"></div><div class="qdot y"></div><div class="qdot g"></div>
+      <span class="qtb">ANIMATEAI TUTOR v2.0 — FREE PREVIEW (5 questions)</span>
+    </div>
+    <div class="qmsgs" id="qaMessages">
+      <div class="msg ai">
+        <div class="mav">AI</div>
+        <div class="mbbl">👋 I'm your <strong>AI Animation Tutor</strong>. Ask me anything from "what is AI animation?" to advanced ComfyUI workflows. What do you want to learn today?</div>
+      </div>
+    </div>
+    <div class="qsugs">
+      <button class="qsug" onclick="askSug('What is AI animation and how does it work?')">What is AI animation?</button>
+      <button class="qsug" onclick="askSug('What free tools do I need to start AI animation?')">Free tools to start?</button>
+      <button class="qsug" onclick="askSug('How do I write good prompts for Runway Gen-2?')">Runway prompts?</button>
+      <button class="qsug" onclick="askSug('What is AnimateDiff and how does it work in ComfyUI?')">What is AnimateDiff?</button>
+      <button class="qsug" onclick="askSug('How do I keep AI characters consistent across frames?')">Character consistency?</button>
+      <button class="qsug" onclick="askSug('How can I make money with AI animation?')">Make money?</button>
+    </div>
+    <div class="qinpw">
+      <input class="qinp" id="qaInput" type="text" placeholder="Ask any AI animation question — beginner to pro..." onkeydown="if(event.key==='Enter')sendQA()"/>
+      <button class="qsnd" onclick="sendQA()">➤</button>
+    </div>
+  </div>
+  <p class="qnote">⚡ Powered by Claude AI · Members get unlimited access · <a href="#enroll" style="color:var(--cyan);text-decoration:none;">Enroll via WhatsApp →</a></p>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="sec sdark">
+  <span class="stag">// faq</span>
+  <h2 class="sh2">EVERYTHING YOU <em>NEED</em> TO KNOW</h2>
+  <div class="fl" id="faqList"></div>
+</section>
+
+<!-- WHATSAPP ENROLL -->
+<section id="enroll" class="sec">
+  <span class="stag">// enrollment</span>
+  <h2 class="sh2">ENROLL <em>TODAY</em> VIA WHATSAPP</h2>
+  <p class="sp">No complicated checkout. Just message us — we'll get you inside the academy in minutes.</p>
+  <div style="max-width:880px;margin:0 auto;">
+    <div class="wa-card">
+      <span class="wa-big-ico">📲</span>
+      <h3>JOIN <em>ANIMATEAI</em> ACADEMY</h3>
+      <p>Message us on WhatsApp with your name and chosen plan. We confirm your payment, grant access, and welcome you to the community — all within minutes.</p>
+      <div class="wa-steps">
+        <div class="wa-step"><div class="wasn">01</div><div class="wast">Pick Your Plan</div><div class="wasd">Choose Starter ($47), Full Access ($97), or Pro + Mentorship ($197) from the pricing below.</div></div>
+        <div class="wa-step"><div class="wasn">02</div><div class="wast">Message Us</div><div class="wasd">Tap the button. Send your name and plan. We reply within 1 hour with payment details.</div></div>
+        <div class="wa-step"><div class="wasn">03</div><div class="wast">Pay Securely</div><div class="wasd">We accept bank transfer, PayPal, mobile money and other methods. Your choice.</div></div>
+        <div class="wa-step"><div class="wasn">04</div><div class="wast">Get Access</div><div class="wasd">Receive your personal login credentials via WhatsApp immediately after payment.</div></div>
+      </div>
+      <a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20to%20enroll%20in%20AnimateAI%20Academy.%20My%20name%20is%20[NAME]%20and%20I%27m%20interested%20in%20the%20[PLAN]%20plan." target="_blank" class="btn-wab">📲 MESSAGE US ON WHATSAPP NOW</a>
+      <p class="wa-note-sm">⚙️ Before publishing: replace 2349065349040 in the code with your WhatsApp number including country code (e.g. 12345678901)</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="sec sdark" style="text-align:center;">
+  <span class="stag">// pricing</span>
+  <h2 class="sh2">SIMPLE <em>PRICING</em></h2>
+  <p class="sp" style="margin:0 auto;text-align:center;">One-time payment. Lifetime access. Message us on WhatsApp to enroll.</p>
+  <div class="pg">
+    <div class="pc">
+      <div class="pct">STARTER</div>
+      <div class="pcp"><sup>$</sup>47</div>
+      <div class="pcper">One-time · Lifetime access</div>
+      <ul class="pcl">
+        <li>Phases 1 &amp; 2 — Foundations + Characters</li>
+        <li>20+ beginner/intermediate lessons</li>
+        <li>AI Tutor — 50 questions/month</li>
+        <li>Tools setup guides &amp; resources</li>
+        <li>Phase project briefs included</li>
+        <li class="no">Phases 3–5 (Advanced + Pro)</li>
+        <li class="no">Private Discord community</li>
+        <li class="no">Mentorship or live Q&amp;A</li>
+      </ul>
+      <a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20the%20STARTER%20plan%20($47)%20for%20AnimateAI%20Academy." target="_blank" class="btn-pco">📲 ENROLL STARTER — $47</a>
+    </div>
+    <div class="pc hot">
+      <div class="pct">FULL ACCESS</div>
+      <div class="pcp"><sup>$</sup>97</div>
+      <div class="pcper">One-time · Lifetime access</div>
+      <ul class="pcl">
+        <li>ALL 5 phases — unlocked forever</li>
+        <li>50+ courses — new ones free forever</li>
+        <li>Unlimited AI Tutor access</li>
+        <li>All project files &amp; resources</li>
+        <li>Private Discord community</li>
+        <li>Certificate of completion</li>
+        <li class="no">1-on-1 mentorship</li>
+        <li class="no">Monthly live Q&amp;A calls</li>
+      </ul>
+      <a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20FULL%20ACCESS%20($97)%20to%20AnimateAI%20Academy." target="_blank" class="btn-pcw">📲 ENROLL FULL ACCESS — $97</a>
+    </div>
+    <div class="pc">
+      <div class="pct">PRO + MENTORSHIP</div>
+      <div class="pcp"><sup>$</sup>197</div>
+      <div class="pcper">One-time · Lifetime access</div>
+      <ul class="pcl">
+        <li>Everything in Full Access</li>
+        <li>Monthly live Q&amp;A sessions</li>
+        <li>Portfolio feedback &amp; reviews</li>
+        <li>Priority WhatsApp support</li>
+        <li>Freelance launchpad guide</li>
+        <li>Exclusive pro-only workshops</li>
+        <li>LoRA training support on Colab</li>
+        <li>1-on-1 Discord mentorship</li>
+      </ul>
+      <a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20PRO%20%2B%20MENTORSHIP%20($197)%20for%20AnimateAI%20Academy." target="_blank" class="btn-pco" style="border-color:rgba(255,45,120,.2);color:var(--pink);">📲 ENROLL PRO — $197</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <span class="stag">// start today</span>
+  <h2 class="sh2">YOUR FIRST FRAME<br><em>IS ONE CLICK AWAY</em></h2>
+  <p>No experience. No expensive software. Just a clear path from beginner to pro animator — all free tools, real results.</p>
+  <div class="ctabtns">
+    <a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20to%20enroll%20in%20AnimateAI%20Academy!" target="_blank" class="btn-hwg">📲 ENROLL VIA WHATSAPP NOW</a>
+    <a href="#qa" class="btn-hg">TRY AI TUTOR FREE →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fg">
+    <div class="fb">
+      <a href="#home" class="logo">Animate<em>AI</em><b>.</b></a>
+      <p>The world's most complete AI Animation Academy. From beginner to professional in 10 weeks using only free tools.</p>
+    </div>
+    <div class="fc"><h5>Learn</h5><ul>
+      <li><a href="#curriculum">Curriculum</a></li>
+      <li><a href="#courses">All Courses</a></li>
+      <li><a href="#stack">Free Tools</a></li>
+      <li><a href="#qa">AI Tutor</a></li>
+    </ul></div>
+    <div class="fc"><h5>Enroll</h5><ul>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#enroll">WhatsApp Enroll</a></li>
+      <li><a href="#" onclick="openLogin(event)">Member Login</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul></div>
+    <div class="fc"><h5>Legal</h5><ul>
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Use</a></li>
+      <li><a href="#">Refund Policy</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul></div>
+  </div>
+  <div class="fbot">
+    <p>© 2025 ANIMATEAI ACADEMY. ALL RIGHTS RESERVED.</p>
+    <p>BUILT FOR CREATORS WITH ZERO BUDGET &amp; BIG DREAMS</p>
+  </div>
+</footer>
+
+<!-- LOGIN MODAL -->
+<div class="movo" id="loginModal">
+  <div class="modal">
+    <button class="modal-x" onclick="closeLogin()">✕</button>
+    <div class="mlgt">🔐 MEMBER ACCESS</div>
+    <h3>Welcome Back</h3>
+    <p>Sign in to access your courses, progress, and unlimited AI Tutor.</p>
+    <div class="ff"><label>Email Address</label><input type="email" id="loginEmail" placeholder="your@email.com"/></div>
+    <div class="ff"><label>Access Code</label><input type="password" id="loginPass" placeholder="Your personal access code"/></div>
+    <button class="btn-si" onclick="doLogin()">SIGN IN →</button>
+    <p class="mnote">No access yet? <a href="#enroll" onclick="closeLogin()">Enroll via WhatsApp →</a></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <nav class="dnav">
+    <div class="dlogo">ANIMATEAI — MEMBER PORTAL</div>
+    <div class="duser">
+      <div class="dav" id="dInit">M</div>
+      <span id="dName">Member</span>
+      <button class="btn-lo" onclick="doLogout()">LOGOUT</button>
+    </div>
+  </nav>
+  <div class="dbody">
+    <div class="dwel">WELCOME BACK, <em id="dGreet">MEMBER</em> 👋</div>
+    <div class="dsub">All 5 phases are unlocked. Keep building — your AI animation journey continues here.</div>
+    <div class="dst">📚 YOUR COURSES <span>(ALL PHASES UNLOCKED)</span></div>
+    <div class="dcg" id="dashCourses"></div>
+    <div class="dst" style="margin-top:6px;">🤖 AI TUTOR — <span>UNLIMITED ACCESS</span></div>
+    <div class="qa-wrap" style="max-width:100%;margin-top:0;">
+      <div class="qa-hdr">
+        <div class="qdot r"></div><div class="qdot y"></div><div class="qdot g"></div>
+        <span class="qtb">ANIMATEAI TUTOR · MEMBER MODE · UNLIMITED</span>
+      </div>
+      <div class="qmsgs" id="dashQaMsgs">
+        <div class="msg ai">
+          <div class="mav">AI</div>
+          <div class="mbbl">🔓 <strong>Full member.</strong> Unlimited questions. Ask anything — beginner to pro level AI animation.</div>
+        </div>
+      </div>
+      <div class="qsugs">
+        <button class="qsug" onclick="dAsk('Walk me through the AnimateDiff workflow in ComfyUI step by step')">AnimateDiff in ComfyUI</button>
+        <button class="qsug" onclick="dAsk('How do I train a LoRA for free on Google Colab step by step?')">LoRA on Colab</button>
+        <button class="qsug" onclick="dAsk('How do I set up Deforum for a music-reactive animation?')">Deforum music video</button>
+        <button class="qsug" onclick="dAsk('What is temporal consistency and how do I achieve it with AnimateDiff?')">Temporal consistency</button>
+        <button class="qsug" onclick="dAsk('How do I combine AI animation with real footage in DaVinci Resolve?')">AI + real footage</button>
+        <button class="qsug" onclick="dAsk('How do I use OpenPose with ControlNet for character pose control?')">OpenPose control</button>
+      </div>
+      <div class="qinpw">
+        <input class="qinp" id="dQaIn" type="text" placeholder="Ask any AI animation question..." onkeydown="if(event.key==='Enter')sendDQA()"/>
+        <button class="qsnd" onclick="sendDQA()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// CURSOR
+const cur=document.getElementById('cur'),crr=document.getElementById('crr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+setInterval(()=>{rx+=(mx-rx)*.15;ry+=(my-ry)*.15;crr.style.left=rx+'px';crr.style.top=ry+'px';},10);
+
+// MARQUEE
+const tools=['Runway Gen-2','Pika Labs','Kling AI','AnimateDiff','ComfyUI','ControlNet','OpenPose','Deforum','Stable Diffusion','Leonardo AI','DaVinci Resolve','CapCut','Upscayl','OBS Studio','Google Colab','Wav2Lip','ElevenLabs','AUTOMATIC1111','IP-Adapter','Stable Video Diffusion'];
+const mt=document.getElementById('mtrack');
+mt.innerHTML=[...tools,...tools,...tools].map(t=>`<span class="mqi">${t}</span>`).join('');
+
+// PHASES
+const phases=[
+  {num:'01',col:'c1',lv:'b',lvt:'BEGINNER',title:'FOUNDATIONS',sub:'Week 1–2 · Generative AI & Your First Clips',
+   theory:['What is generative AI? Diffusion models vs GANs','How text-to-video AI processes prompts','Understanding tokens, seeds & latent space','The AI animation production pipeline overview'],
+   tools:['Runway Gen-2 (free tier)','Pika Labs (free tier)','Kling AI (free tier)','OBS Studio — free screen recorder'],
+   skills:['Prompt engineering for motion control','Camera movements: pan, zoom, orbit, dolly','Style keywords and negative prompts','Basic quality control & iteration'],
+   proj:'🎬 5-second cinematic landscape with deliberate camera movement using Runway or Pika'},
+  {num:'02',col:'c2',lv:'b',lvt:'BEGINNER',title:'CHARACTER & CONSISTENCY',sub:'Week 3–4 · Build Your AI Cast',
+   theory:['Why character consistency is the #1 challenge','IP-Adapter and image conditioning explained','Understanding seed locking across generations','Character sheets and reference image strategy'],
+   tools:['Leonardo AI — Character Reference (free)','Stable Video Diffusion (free, local)','AnimateDiff via ComfyUI (free)','Hugging Face — free model hosting'],
+   skills:['IP-Adapter for character consistency','Seed control across multiple generations','Batch generation for efficiency','Face enhancement and upscaling techniques'],
+   proj:'🚶 10-second character walking cycle — same character, consistent look across every frame'},
+  {num:'03',col:'c3',lv:'i',lvt:'INTERMEDIATE',title:'ADVANCED WORKFLOWS',sub:'Week 5–6 · Go Deep with ComfyUI',
+   theory:['Node-based workflow architecture in ComfyUI','Temporal consistency: what it is and why it breaks','Video-to-video transformation pipeline','Understanding latent noise and frame interpolation'],
+   tools:['ComfyUI (free, runs locally on your PC)','ControlNet (free, multiple control modes)','OpenPose (free, body pose tracking)','Deforum (free, script-driven animation)'],
+   skills:['Build custom AnimateDiff ComfyUI workflows','Video-to-video transformation techniques','Achieving temporal consistency across frames','Music-reactive animation using audio input'],
+   proj:'🎵 Music-reactive animation — visuals that respond and move with a soundtrack'},
+  {num:'04',col:'c4',lv:'i',lvt:'INTERMEDIATE',title:'VFX & POST-PRODUCTION',sub:'Week 7–8 · Polish Like a Pro Studio',
+   theory:['Color grading theory for AI-generated footage','Audio-visual synchronization principles','Green screen compositing fundamentals','AI upscaling — how it works and when to use it'],
+   tools:['CapCut (free — editing + AI effects)','DaVinci Resolve (free professional editor)','Upscayl (free, local AI upscaling to 4K)','Wav2Lip (free, AI lip-sync on Google Colab)'],
+   skills:['Lip-sync AI characters with Wav2Lip','Green screen compositing AI with real footage','Color grading with cinematic LUTs','Export settings for YouTube, TikTok, Instagram'],
+   proj:'🎙️ AI spokesperson video — generated character, voiceover, lip-sync, color grade'},
+  {num:'05',col:'c5',lv:'p',lvt:'PRO',title:'PRO PIPELINE',sub:'Week 9–10 · Your Short Film & Business',
+   theory:['LoRA training: what it is and why it matters','API automation and batch processing theory','Copyright considerations for AI-generated content','Monetization models for AI animation creators'],
+   tools:['AUTOMATIC1111 + extensions (free, local)','Google Colab — free GPU for LoRA training','LLM (Claude/GPT) for script & storyboard generation','Fiverr, Upwork, YouTube for monetization'],
+   skills:['Train a custom LoRA on Google Colab for free','Batch processing and API workflow automation','Build a client-ready portfolio in 48 hours','Price, pitch and deliver AI animation services'],
+   proj:'🏆 1-minute AI short film — original LoRA characters, full storyboard, post-production'}
+];
+
+document.getElementById('phaseList').innerHTML=phases.map(p=>`
+<div class="phase">
+  <div class="phase-hdr" onclick="togglePhase(this)">
+    <div class="pn ${p.col}">${p.num}</div>
+    <div class="pi"><div class="pt">${p.title}</div><div class="ps">${p.sub}</div></div>
+    <span class="plv ${p.lv}">${p.lvt}</span>
+    <span class="ptog">+</span>
+  </div>
+  <div class="pbody">
+    <div class="pinner">
+      <div class="pg2">
+        <div class="pb"><div class="pb-t">📖 Theory</div><ul>${p.theory.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="pb"><div class="pb-t">🔧 Tools</div><ul>${p.tools.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+        <div class="pb"><div class="pb-t">🎯 Skills</div><ul>${p.skills.map(t=>`<li>${t}</li>`).join('')}</ul></div>
+      </div>
+      <div class="pproj"><span class="ppj-ico">🎬</span><div><div class="ppj-lbl">Phase Project</div><div class="ppj-txt">${p.proj}</div></div></div>
+    </div>
+  </div>
+</div>`).join('');
+
+function togglePhase(hdr){
+  const b=hdr.nextElementSibling,ic=hdr.querySelector('.ptog'),open=b.classList.contains('open');
+  document.querySelectorAll('.pbody.open').forEach(x=>{x.classList.remove('open');x.previousElementSibling.querySelector('.ptog').classList.remove('open');});
+  if(!open){b.classList.add('open');ic.classList.add('open');}
+}
+
+// COURSES
+const courses=[
+  {e:'🎬',t:'AI Animation 101 — Your First Frame',d:'What is AI animation? Tools overview and your first generated video in under 10 minutes.',l:'beginner',n:12,tm:'2h 30m',bg:'bga'},
+  {e:'✍️',t:'Prompt Engineering for Motion',d:'Write prompts that control style, movement, camera angles, lighting and mood precisely.',l:'beginner',n:15,tm:'3h 15m',bg:'bgb'},
+  {e:'📷',t:'Camera Movements in AI Video',d:'Master pan, zoom, orbit, dolly, crane shots — all through text prompts alone.',l:'beginner',n:10,tm:'2h 00m',bg:'bgc'},
+  {e:'🎨',t:'Character Design with Leonardo AI',d:'Create consistent, memorable AI characters using Leonardo AI character reference.',l:'beginner',n:14,tm:'3h 00m',bg:'bgd'},
+  {e:'🌍',t:'World Building & Environment Design',d:'Build stunning AI-generated environments, cityscapes, and cinematic world backdrops.',l:'beginner',n:12,tm:'2h 30m',bg:'bga'},
+  {e:'🔄',t:'Character Consistency with IP-Adapter',d:'Seed control, IP-Adapter workflows, and batch generation for consistent characters.',l:'intermediate',n:18,tm:'4h 00m',bg:'bge'},
+  {e:'🎞️',t:'Storytelling & AI Storyboarding',d:'Structure stories, plan shots, and create animatics before you start generating clips.',l:'intermediate',n:16,tm:'3h 30m',bg:'bgb'},
+  {e:'🔧',t:'ComfyUI — From Zero to Pro Workflow',d:'Node-based AI animation pipeline. Build, customize, and automate with ComfyUI.',l:'intermediate',n:24,tm:'5h 30m',bg:'bgf'},
+  {e:'🕹️',t:'ControlNet & OpenPose',d:'Use body tracking and depth maps to control exactly how characters move in AI video.',l:'intermediate',n:20,tm:'4h 15m',bg:'bgh'},
+  {e:'🎵',t:'Music-Reactive AI Animation with Deforum',d:'Create animations that respond to audio. Build a Deforum music video from scratch.',l:'intermediate',n:16,tm:'3h 30m',bg:'bgg'},
+  {e:'🎙️',t:'Lip-Sync & Voiceover with Wav2Lip',d:'Add professional lip-synced voiceover to AI characters using Wav2Lip and ElevenLabs.',l:'intermediate',n:14,tm:'2h 50m',bg:'bgi'},
+  {e:'🎥',t:'Post-Production & VFX',d:'Color grading, green screen compositing, AI upscaling, combining AI with real footage.',l:'intermediate',n:20,tm:'4h 30m',bg:'bgc'},
+  {e:'⚡',t:'AUTOMATIC1111 Mastery',d:'Full guide to A1111 with all major extensions. Build a professional local AI studio.',l:'pro',n:22,tm:'5h 00m',bg:'bge'},
+  {e:'🧬',t:'LoRA Training on Google Colab',d:'Train custom character models for free using Google Colab GPU. Own your unique AI cast.',l:'pro',n:16,tm:'3h 30m',bg:'bgf'},
+  {e:'🏭',t:'Batch Processing & API Automation',d:'Scale production. Automate generation pipelines. Work like a studio, not a solo creator.',l:'pro',n:18,tm:'4h 00m',bg:'bgg'},
+  {e:'💼',t:'Freelancing & Monetization',d:'Get clients, set rates, build packages. Turn AI animation skills into real income.',l:'pro',n:14,tm:'3h 00m',bg:'bgh'},
+  {e:'🏆',t:'Your 1-Minute AI Short Film',d:'Full production of a 1-minute AI short — script → storyboard → generate → post → publish.',l:'pro',n:30,tm:'8h 30m',bg:'bgi'},
+];
+
+function renderCourses(list){
+  document.getElementById('coursesGrid').innerHTML=list.map(c=>`
+  <div class="cc">
+    <div class="ccth ${c.bg}">${c.e}<span class="cclv lv${c.l[0]}">${c.l.toUpperCase()}</span></div>
+    <div class="ccb">
+      <div class="cctit">${c.t}</div>
+      <div class="ccd">${c.d}</div>
+      <div class="ccm"><span>📚 ${c.n} lessons</span><span>⏱ ${c.tm}</span></div>
+    </div>
+    <div class="cclk">
+      <div class="cclk-ic">🔒</div>
+      <div class="cclk-tx">MEMBERS ONLY</div>
+      <button class="cclk-btn" onclick="window.open('https://wa.me/2349065349040?text=Hi!%20I%20want%20to%20enroll%20in%20AnimateAI%20Academy.','_blank')">📲 Enroll via WhatsApp</button>
+    </div>
+  </div>`).join('');
+}
+renderCourses(courses);
+function filterC(f,btn){document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderCourses(f==='all'?courses:courses.filter(c=>c.l===f));}
+
+// STACK
+const stack=[
+  {i:'🎬',n:'Runway Gen-2',d:'Text-to-video and video-to-video generation. Industry standard for cinematic AI clips.',t:'FREE TIER'},
+  {i:'🐦',n:'Pika Labs',d:'Fast, stylized AI video generation from text or image prompts. Great for quick clips.',t:'FREE TIER'},
+  {i:'🤖',n:'Kling AI',d:'High-quality video generation with a generous free tier. Excellent motion quality.',t:'FREE TIER'},
+  {i:'⚙️',n:'ComfyUI',d:'Node-based AI pipeline tool. Free, local, infinitely customizable for pro workflows.',t:'100% FREE'},
+  {i:'🎭',n:'AnimateDiff',d:'The gold standard for consistent character animation inside ComfyUI workflows.',t:'100% FREE'},
+  {i:'🧠',n:'Stable Diffusion',d:'Open-source image & video AI. The backbone of most advanced local animation workflows.',t:'100% FREE'},
+  {i:'✏️',n:'ControlNet',d:'Control AI output with depth maps, edge detection, pose tracking and more.',t:'100% FREE'},
+  {i:'🕺',n:'OpenPose',d:'Body tracking for AI. Control how characters stand, move, and gesture precisely.',t:'100% FREE'},
+  {i:'🌀',n:'Deforum',d:'Script-driven AI animation. Perfect for psychedelic effects and music-reactive videos.',t:'100% FREE'},
+  {i:'🎵',n:'ElevenLabs',d:'Best AI voice generation for spokesperson videos and character voiceovers.',t:'FREE TIER'},
+  {i:'👄',n:'Wav2Lip',d:'Lip-sync any AI character to any audio track. Free and runs on Google Colab.',t:'100% FREE'},
+  {i:'🎞️',n:'DaVinci Resolve',d:'Professional video editor with color grading, VFX and audio. Free forever.',t:'100% FREE'},
+  {i:'✂️',n:'CapCut',d:'Mobile and desktop editor with fast cuts, effects and built-in AI tools.',t:'FREE TIER'},
+  {i:'📈',n:'Upscayl',d:'AI upscaling — turn 720p AI clips into crisp 4K output. Local and free.',t:'100% FREE'},
+  {i:'☁️',n:'Google Colab',d:'Free cloud GPU for training LoRA models and running heavy AI workflows.',t:'FREE GPU'},
+  {i:'📹',n:'OBS Studio',d:'Record screen, webcam and audio. Essential for creating your course content.',t:'100% FREE'},
+];
+document.getElementById('stackGrid').innerHTML=stack.map(s=>`<div class="stk"><div class="stk-ico">${s.i}</div><div class="stk-n">${s.n}</div><div class="stk-d">${s.d}</div><span class="stk-t">${s.t}</span></div>`).join('');
+
+// FAQ
+const faqs=[
+  {q:'Do I need any experience to start?',a:'Absolutely not. Phase 1 starts from zero — we explain what AI animation is before you touch any tool. If you can type on a keyboard and click a mouse, you can start today and make your first AI clip within the first hour.'},
+  {q:'Are all the tools in this curriculum really free?',a:'Yes. Every tool we teach in Phases 1–4 has a free tier powerful enough to complete every project. Phase 5 uses Google Colab\'s free GPU for LoRA training. The only money you spend is on this course itself.'},
+  {q:'How does WhatsApp enrollment work?',a:'Just tap the WhatsApp button and send us your name and chosen plan. We reply within 1 hour with payment instructions. As soon as payment is confirmed, you get your personal login credentials via WhatsApp. The whole process takes under 30 minutes.'},
+  {q:'Can I actually make money with AI animation?',a:'Yes — many paths exist. Fiverr and Upwork have strong demand for AI animation services. YouTube channels teaching AI animation grow fast with organic reach. You can sell animation packs, create brand content for businesses, or produce your own AI series. Phase 5 covers all of this in detail.'},
+  {q:'What is the difference between the 3 plans?',a:'Starter ($47) covers Phases 1–2 — great for testing the waters. Full Access ($97) unlocks all 5 phases, the pro pipeline, short film project, and the private community. Pro + Mentorship ($197) adds monthly live Q&A calls, portfolio feedback, priority WhatsApp support, and direct mentorship.'},
+  {q:'How long do I have access?',a:'Lifetime. Pay once, access forever. All future courses and updates are automatically added at no extra cost for Full Access and Pro members. The AI animation field evolves fast — we keep the curriculum current.'},
+  {q:'Do I need a powerful computer?',a:'For Phases 1–2 (Runway, Pika, Leonardo), you just need any device with a web browser — everything runs in the cloud. For Phases 3–5 (ComfyUI, local Stable Diffusion), a GPU helps but we show you how to use Google Colab\'s free cloud GPU as an alternative.'},
+  {q:'What is temporal consistency and why does it matter?',a:'Temporal consistency means your AI characters and scenes look the same from frame to frame — no flickering faces, no random style changes mid-clip. It\'s the biggest technical challenge in AI animation and what separates amateur output from professional work. Phase 3 dedicates an entire module to solving it with AnimateDiff.'},
+  {q:'What is LoRA training and do I need it?',a:'A LoRA is a small trained model that teaches AI to generate a specific character or style consistently. It\'s what unlocks truly unique, original AI characters in your animations. We teach you to train LoRAs for free on Google Colab in Phase 5 — no local GPU required.'},
+  {q:'What if I\'m not satisfied?',a:'Message us on WhatsApp within 7 days of purchase. We offer a full refund, no questions asked. We want you to succeed — if this course isn\'t the right fit, we\'ll make it right.'},
+];
+document.getElementById('faqList').innerHTML=faqs.map(f=>`<div class="fi"><button class="fq" onclick="toggleFAQ(this)">${f.q}<span class="fqp">+</span></button><div class="fa">${f.a}</div></div>`).join('');
+function toggleFAQ(btn){const a=btn.nextElementSibling,ic=btn.querySelector('.fqp'),open=a.classList.contains('open');document.querySelectorAll('.fa.open').forEach(x=>{x.classList.remove('open');x.previousElementSibling.querySelector('.fqp').classList.remove('open');});if(!open){a.classList.add('open');ic.classList.add('open');}}
+
+// AI TUTOR
+const SYS=`You are an expert AI animation tutor for AnimateAI Academy — a 10-week, 5-phase course. Answer questions about AI animation clearly and helpfully, covering all phases:
+Phase 1: Runway Gen-2, Pika Labs, Kling AI, prompt engineering for motion, camera movements (pan, zoom, orbit, dolly), style keywords, negative prompts, diffusion models vs GANs theory.
+Phase 2: Leonardo AI character reference, Stable Video Diffusion, AnimateDiff, IP-Adapter for character consistency, seed control, batch generation, face enhancement.
+Phase 3: ComfyUI node workflows, ControlNet, OpenPose, temporal consistency techniques, video-to-video transformation, Deforum for music-reactive and psychedelic animation.
+Phase 4: CapCut editing, DaVinci Resolve color grading, Upscayl AI upscaling, Wav2Lip lip-sync, green screen compositing, combining AI with real footage, ElevenLabs voiceover.
+Phase 5: AUTOMATIC1111 + extensions, LoRA training on Google Colab (free GPU), LLM integration for script/storyboard generation, batch processing, API automation, client workflows, pricing, portfolio building, freelancing on Fiverr/Upwork, monetization strategies.
+Be practical, specific, and step-by-step where needed. Keep answers clear and useful. Use • bullets for lists. Avoid markdown headers.`;
+
+let qaCount=0;
+
+async function sendQA(){
+  const inp=document.getElementById('qaInput');
+  const q=inp.value.trim();if(!q)return;
+  if(qaCount>=5){addMsg('qaMessages','ai','🔒 You\'ve used your 5 free questions. <strong>Enroll via WhatsApp</strong> for unlimited AI Tutor access with any plan!');return;}
+  inp.value='';qaCount++;
+  addMsg('qaMessages','user',q);
+  const t=addMsg('qaMessages','ai','thinking... ⚡',true);
+  const r=await callAI(q,SYS);t.remove();addMsg('qaMessages','ai',r);
+}
+function askSug(q){document.getElementById('qaInput').value=q;sendQA();}
+
+async function sendDQA(){
+  const inp=document.getElementById('dQaIn');
+  const q=inp.value.trim();if(!q)return;
+  inp.value='';
+  addMsg('dashQaMsgs','user',q);
+  const t=addMsg('dashQaMsgs','ai','thinking... ⚡',true);
+  const r=await callAI(q,SYS+' The user is a full member. Give thorough, detailed answers.');t.remove();addMsg('dashQaMsgs','ai',r);
+}
+function dAsk(q){document.getElementById('dQaIn').value=q;sendDQA();}
+
+async function callAI(q,sys){
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:q}]})});
+    const d=await res.json();return d.content?.[0]?.text||'Sorry, could not get an answer. Try again.';
+  }catch(e){return 'Connection issue. Please try again.';}
+}
+
+function addMsg(cid,role,txt,typing=false){
+  const c=document.getElementById(cid),d=document.createElement('div');
+  d.className=`msg ${role}`;
+  d.innerHTML=`<div class="mav">${role==='ai'?'AI':'YOU'}</div><div class="mbbl${typing?' typing':''}">${txt.replace(/\n/g,'<br>').replace(/• /g,'<br>• ')}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;return d;
+}
+
+// AUTH
+function openLogin(e){if(e)e.preventDefault();document.getElementById('loginModal').classList.add('show');}
+function closeLogin(){document.getElementById('loginModal').classList.remove('show');}
+document.getElementById('loginModal').addEventListener('click',function(e){if(e.target===this)closeLogin();});
+function doLogin(){
+  const em=document.getElementById('loginEmail').value.trim(),pw=document.getElementById('loginPass').value.trim();
+  if(!em||!pw){alert('Please enter your email and access code.');return;}
+  const name=em.split('@')[0];
+  document.getElementById('dInit').textContent=name[0].toUpperCase();
+  document.getElementById('dName').textContent=name;
+  document.getElementById('dGreet').textContent=name.toUpperCase();
+  const prog=[100,85,60,30,0,80,45,20,70,10,50,35,0,0,0,0,0];
+  document.getElementById('dashCourses').innerHTML=courses.map((c,i)=>`<div class="dcc"><div class="dce">${c.e}</div><div class="dct">${c.t}</div><div class="dcpb"><div class="dcpf" style="width:${prog[i]||0}%"></div></div><div class="dcm">${prog[i]||0}% complete · ${c.n} lessons · ${c.tm}</div></div>`).join('');
+  closeLogin();document.getElementById('dash').classList.add('show');document.body.style.overflow='hidden';
+}
+function doLogout(){document.getElementById('dash').classList.remove('show');document.body.style.overflow='';}
+</script>
+
+<!-- =====================================================================
+  ✏️  OWNER'S UPDATE GUIDE — HOW TO ADD MORE INFO TO THIS WEBSITE
+  =====================================================================
+
+  YOUR WHATSAPP: +2349065349040 (already set on all buttons)
+
+  ── HOW TO EDIT THIS FILE ──────────────────────────────────────────────
+  Open AnimateAI-Academy.html in any text editor:
+  • Windows: Notepad, Notepad++, or VS Code (free)
+  • Mac: TextEdit or VS Code (free)
+  • Online: github.dev (open your repo, press . key)
+
+  ── 1. ADD A NEW COURSE ───────────────────────────────────────────────
+  Find the line that starts: const courses=[
+  Each course looks like this:
+    {e:'🎬', t:'Course Title', d:'Short description here.',
+     l:'beginner', n:12, tm:'2h 30m', bg:'bga'},
+
+  FIELDS:
+    e  = emoji icon
+    t  = course title
+    d  = short description (1-2 sentences)
+    l  = level: 'beginner' OR 'intermediate' OR 'pro'
+    n  = number of lessons
+    tm = time (e.g. '3h 00m')
+    bg = background color: bga / bgb / bgc / bgd / bge / bgf / bgg / bgh / bgi
+
+  EXAMPLE — to add a new course, paste this BEFORE the final ]; :
+    {e:'🤖',t:'AI Video Upscaling Masterclass',d:'Turn blurry AI clips into 4K cinema quality using Upscayl and Real-ESRGAN.',l:'intermediate',n:10,tm:'2h 00m',bg:'bgd'},
+
+  ── 2. ADD A NEW CURRICULUM PHASE ─────────────────────────────────────
+  Find: const phases=[
+  Each phase has: num, col, lv, lvt, title, sub, theory[], tools[], skills[], proj
+  Copy any existing phase block and change the content.
+  col options: c1(cyan) c2(gold) c3(pink) c4(blue) c5(purple)
+  lv options: b(beginner) i(intermediate) p(pro)
+
+  ── 3. ADD A NEW FAQ ──────────────────────────────────────────────────
+  Find: const faqs=[
+  Add a new entry before the final ]; like:
+    {q:'Your new question here?', a:'Your full answer here. As long as you need.'},
+
+  ── 4. ADD A NEW TOOL TO THE FREE TOOLKIT SECTION ────────────────────
+  Find: const stack=[
+  Add a new entry:
+    {i:'🔥', n:'Tool Name', d:'What it does and why it matters.', t:'FREE TIER'},
+  t options: 'FREE TIER' / '100% FREE' / 'FREE GPU'
+
+  ── 5. CHANGE YOUR PRICES ─────────────────────────────────────────────
+  Search (Ctrl+F) for:  $47   $97   $197
+  Change them to whatever you want. Also update the WhatsApp link text nearby.
+
+  ── 6. CHANGE YOUR WHATSAPP NUMBER ────────────────────────────────────
+  Search (Ctrl+F) for: 2349065349040
+  Replace ALL instances with your new number (no + sign, with country code).
+
+  ── 7. ADD TESTIMONIALS ───────────────────────────────────────────────
+  Find the line:  <!-- PRICING -->
+  Paste this block ABOVE it:
+
+  <section class="sec">
+    <span class="stag">// student results</span>
+    <h2 class="sh2">WHAT STUDENTS <em>SAY</em></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:44px;">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:24px;">
+        <p style="color:var(--muted2);font-size:.88rem;line-height:1.7;margin-bottom:16px;">"Write student quote here."</p>
+        <strong style="font-size:.85rem;">— Student Name, Country</strong>
+      </div>
+    </div>
+  </section>
+
+  ── 8. UPDATE THE PAGE TITLE / SEO ────────────────────────────────────
+  Near the top of the file, find:
+    <title>AnimateAI Academy – Master AI Animation</title>
+  Change it to anything you want.
+
+  ── 9. AFTER EDITING — RE-UPLOAD TO GITHUB ────────────────────────────
+  1. Go to your GitHub repo
+  2. Click on index.html → pencil icon (Edit) → paste your updated code → Commit
+  3. Your live website updates automatically within 60 seconds. That's it!
+
+  ── NEED HELP? ────────────────────────────────────────────────────────
+  Come back to Claude and say:
+  "I want to add [describe what you want] to my AnimateAI Academy website"
+  and paste in your current file. Claude will update it for you instantly.
+
+====================================================================== -->
+
+<!-- FLOATING WHATSAPP BUTTON -->
+<a href="https://wa.me/2349065349040?text=Hi!%20I%20want%20to%20enroll%20in%20AnimateAI%20Academy!" 
+   target="_blank" id="wa-float" title="Enroll via WhatsApp">
+  📲
+</a>
+<style>
+#wa-float{
+  position:fixed;bottom:28px;right:28px;z-index:800;
+  width:60px;height:60px;border-radius:50%;
+  background:#25D366;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.6rem;text-decoration:none;
+  box-shadow:0 4px 24px rgba(37,211,102,.45);
+  animation:wapulse 2.5s ease-in-out infinite;
+  transition:transform .2s;
+}
+#wa-float:hover{transform:scale(1.12);}
+@keyframes wapulse{
+  0%,100%{box-shadow:0 4px 24px rgba(37,211,102,.45);}
+  50%{box-shadow:0 4px 40px rgba(37,211,102,.75),0 0 0 10px rgba(37,211,102,.08);}
+}
+#wa-float-tip{
+  position:fixed;bottom:38px;right:96px;z-index:800;
+  background:#25D366;color:#000;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;
+  padding:6px 12px;border-radius:8px;letter-spacing:1px;white-space:nowrap;
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+#wa-float-tip::after{content:'';position:absolute;right:-7px;top:50%;transform:translateY(-50%);border:4px solid transparent;border-left-color:#25D366;}
+#wa-float:hover ~ #wa-float-tip{opacity:1;}
+</style>
+<div id="wa-float-tip">ENROLL NOW →</div>
+
+</body>
+</html>
